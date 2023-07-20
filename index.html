@@ -12,26 +12,26 @@
 
   <script src="./dist/Leaflet.PaintPolygon.js"></script>
 
-  <style type="text/css">
+  <style>
     body {
-      padding: 0;
       margin: 0;
+      padding: 0;
     }
 
     html, body, #mapid {
-      height: 100%;
       width: 100vw;
+      height: 100%;
     }
   </style>
 </head>
 <body>
-<a href="https://github.com/tcoupin/leaflet-paintpolygon"><img
-  alt="Fork me on GitHub"
-  src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" style="position: absolute; top: 0; right: 0; border: 0;z-index: 10000;"></a>
+<a href="https://github.com/tcoupin/leaflet-paintpolygon">
+  <img alt="Fork me on GitHub" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" style="position: absolute; top: 0; right: 0; border: 0;z-index: 10000;">
+</a>
 <div id="mapid"></div>
 <script>
 
-  var map = L.map('mapid').setView([43.605413, 3.879568], 10);
+  let map = L.map('mapid').setView([43.605413, 3.879568], 10);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -41,7 +41,7 @@
     ext: 'png'
   }).addTo(map);
 
-  var paintpolygonControl = L.control.paintPolygon({position: 'topleft'}).addTo(map);
+  let paintpolygonControl = L.control.paintPolygon({position: 'topleft'}).addTo(map);
 
   //INTRO
   intro = introJs();
