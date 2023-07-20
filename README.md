@@ -2,7 +2,7 @@
 
 [leaflet-paintpolygon](https://github.com/tcoupin/leaflet-paintpolygon.git)
 
-Create polygon on leaflet map like Paint[brush]! Choose your brush size and draw ! Or erase...
+Create polygon on leaflet map like Paint[brush]! Choose your brush size and draw! Or erase...
 Mobile and desktop compatible, based on [turf.js](http://turfjs.org).
 
 **Turf packages are already included in dist js.**
@@ -18,24 +18,24 @@ L.control.paintPolygon().addTo(map)
 
 ```js
  options: {
-        position: 'topright',     // position of the control
-        radius: 30,               // radius on start (pixel)
-        minRadius: 10,            // min radius (pixel)
-        maxRadius: 50,            // max radius (pixel)
-        layerOptions: {},         // path style of drawed layer (see: https://leafletjs.com/reference-1.3.0.html#path-option)
-        drawOptions: {            // path style on draw (see: https://leafletjs.com/reference-1.3.0.html#path-option)
-            weight: 1
-        },
-        eraseOptions: {           // path style on erase (see: https://leafletjs.com/reference-1.3.0.html#path-option)
-            color: '#ff324a',
-            weight: 1
-        },
-        menu: {                   // Customize menu, set to false to prevent adding control UI on map, you need to build your own UI (on map or not)
-        	drawErase: true,
-            size: true,
-            eraseAll: true
-        }
-}               
+    position: 'topright', // position of the control
+    radius: 30,           // radius on start (pixel)
+    minRadius: 10,        // min radius (pixel)
+    maxRadius: 50,        // max radius (pixel)
+    layerOptions: {},     // path style of drawn layer (see: https://leafletjs.com/reference-1.3.0.html#path-option)
+    drawOptions: {        // path style on draw (see: https://leafletjs.com/reference-1.3.0.html#path-option)
+        weight: 1
+    },
+    eraseOptions: {       // path style on erase (see: https://leafletjs.com/reference-1.3.0.html#path-option)
+        color: '#ff324a',
+        weight: 1
+    },
+    menu: {               // Customize menu, set to false to prevent adding control UI on map, you need to build your own UI (on map or not)
+        drawErase: true,
+        size: true,
+        eraseAll: true
+    }
+}       
 ```
 
 ### External control
