@@ -1,0 +1,87 @@
+/*   Icons  */
+
+.leaflet-control-paintpolygon-icon {
+  width: 30px;
+  height: 30px;
+
+  background-image: url('./PaintPolygon.svg');
+  background-repeat: no-repeat;
+}
+
+.leaflet-control-paintpolygon-icon-active {
+  -webkit-filter: invert(75%); /* Safari 6.0 - 9.0 */
+          filter: invert(75%);
+}
+
+.leaflet-control-paintpolygon-icon.leaflet-control-paintpolygon-icon-trash {
+  background-position: 0 0;
+}
+
+.leaflet-control-paintpolygon-icon.leaflet-control-paintpolygon-icon-brush {
+  background-position: 0 -30px;
+}
+
+.leaflet-control-paintpolygon-icon.leaflet-control-paintpolygon-icon-eraser {
+  background-position: 0 -60px;
+}
+
+.leaflet-control-paintpolygon-icon.leaflet-control-paintpolygon-icon-size {
+  background-position: 0 -90px;
+}
+
+
+/* Menu */
+
+.leaflet-control-paintpolygon-menu {
+  position: absolute;
+
+  display: inline-block;
+  overflow: hidden;
+
+  max-width: 0;
+  max-height: 30px;
+
+  -webkit-transition: all .5s;
+     -moz-transition: all .5s;
+      -ms-transition: all .5s;
+       -o-transition: all .5s;
+          transition: all .5s;
+  white-space: nowrap;
+
+  border: 0 !important;
+  background-color: #fff;
+}
+
+.leaflet-control-paintpolygon-menu-content {
+  display: inline-block;
+
+  max-width: 250px;
+  padding: 5px;
+}
+
+.leaflet-control-paintpolygon-menu-open {
+  max-width: 250px;
+  max-height: 200px;
+
+  border: inherit !important;
+}
+
+.leaflet-control-container .leaflet-top.leaflet-right .leaflet-control-paintpolygon-menu {
+  top: 60px;
+  right: 30px;
+}
+
+.leaflet-control-container .leaflet-top.leaflet-left .leaflet-control-paintpolygon-menu {
+  top: 60px;
+  left: 30px;
+}
+
+.leaflet-control-container .leaflet-bottom.leaflet-right .leaflet-control-paintpolygon-menu {
+  right: 30px;
+  bottom: 0;
+}
+
+.leaflet-control-container .leaflet-bottom.leaflet-left .leaflet-control-paintpolygon-menu {
+  bottom: 0;
+  left: 30px;
+}
