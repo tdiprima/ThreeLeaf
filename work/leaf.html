@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three.js with Leaflet Overlay</title>
+  <!-- Important dependencies: https://gist.github.com/Sumbera/11114288 -->
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+    }
+
+    #map {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    #webgl-container {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<div id="webgl-container"></div>
+
+<!-- Add Three.js and Leaflet.js libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> -->
+<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+<script src="L.CanvasOverlay.js"></script>
+
+<script>
+  // Leaflet map setup
+  const map = L.map('map').setView([51.505, -0.09], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+  // Overlay a Three.js scene on the Leaflet map
+  const overlay = L.canvasOverlay()
+    .drawing(drawWebGL)
+    .addTo(map);
+
+  function drawWebGL(canvasOverlay, params) {
+    // Get the Leaflet map overlay canvas and create a Three.js scene on it
+    const canvas = canvasOverlay.canvas();
+    const context = canvas.getContext('webgl');
+    const gl = context || canvas.getContext('experimental-webgl');
+
+    // For simplicity, we'll just render a cube on the map.
+    // Make sure to update the cube position accordingly to the map coordinates(?)
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('webgl-container').appendChild(renderer.domElement);
+
+    // Sample cube in the scene
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // This function will be called every time the map is panned or zoomed.
+  }
+
+  // Call the drawWebGL function to initialize the Three.js scene on the Leaflet map
+  drawWebGL(overlay);
+</script>
+</body>
+</html>
