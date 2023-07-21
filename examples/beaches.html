@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>top ten beaches of the South Pacific</title>
+  <!-- https://www.sitepoint.com/leaflet-create-map-beginner-guide/ -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      width: 100vw;
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+<!-- A Beginner's Guide to Creating a Map -->
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+<script>
+  // Initialize the map
+  const map = L.map('map', {
+    center: [-29.50, 145],
+    zoom: 3.5
+  });
+
+  // Prevent accidental scrolling of the map when trying to navigate through a page
+  // const map = L.map('map', {scrollWheelZoom:false}).setView([-29.50, 145], 3.5);
+
+  // Add the base layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+
+  // Customize the markers
+  const basicBeachIcon = L.icon({
+    // iconUrl: 'images/beach-icon-chair.svg',
+    iconUrl: 'images/beach-icon-colorful.svg',
+    iconSize: [40, 40],
+  });
+
+  // Add markers + popups to indicate the beaches
+  const marker1 = L.marker([-37.699450, 176.279420], {icon: basicBeachIcon})
+    .bindPopup('Whitehaven Beach, Whitsunday Island')
+    .addTo(map);
+  const marker2 = L.marker([-27.643310, 153.305140], {icon: basicBeachIcon})
+    .bindPopup('Turquoise Bay Exmouth, Australia')
+    .addTo(map);
+  const marker3 = L.marker([-33.956330, 122.150270], {icon: basicBeachIcon})
+    .bindPopup('Cape Le Grand National Park Esperance, Australia')
+    .addTo(map);
+  const marker4 = L.marker([-34.962390, 117.391220], {icon: basicBeachIcon})
+    .bindPopup('Greens Pool Denmark, Australia')
+    .addTo(map);
+  const marker5 = L.marker([-17.961210, 122.214820], {icon: basicBeachIcon})
+    .bindPopup('Cable Beach Broome, Australia')
+    .addTo(map);
+  const marker6 = L.marker([-16.505960, 151.751520], {icon: basicBeachIcon})
+    .bindPopup('Matira Beach, Society Islands')
+    .addTo(map);
+  const marker7 = L.marker([-22.594400, 167.484440], {icon: basicBeachIcon})
+    .bindPopup('Piscine Naturelle Ile Des Pins, New Caledonia')
+    .addTo(map);
+  const marker8 = L.marker([-37.977000, 177.057000], {icon: basicBeachIcon})
+    .bindPopup('Ohope Beach Whakatane, New Zealand')
+    .addTo(map);
+  const marker9 = L.marker([-41.037600, 173.017000], {icon: basicBeachIcon})
+    .bindPopup('Kaiteriteri Beach, New Zealand')
+    .addTo(map);
+  const marker10 = L.marker([-37.670300, 176.212000], {icon: basicBeachIcon})
+    .bindPopup('Mt Maunganui Main Beach, New Zealand')
+    .addTo(map);
+
+  // Add layers to the map
+  const basemaps = {
+    StreetView: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',   {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
+    Topography: L.tileLayer.wms('http://ows.mundialis.de/services/service?',   {layers: 'TOPO-WMS'}),
+    Places: L.tileLayer.wms('http://ows.mundialis.de/services/service?', {layers: 'OSM-Overlay-WMS'})
+  };
+
+  // And a menu!
+  L.control.layers(basemaps).addTo(map);
+
+  // Set the Topography layer as the default layer
+  basemaps.Topography.addTo(map);
+</script>
+</body>
+</html>
