@@ -35,12 +35,12 @@ L.control.paintPolygon().addTo(map)
         size: true,
         eraseAll: true
     }
-}       
+}
 ```
 
 ### External control
 
-Add `menu: false` in options object to prevent UI creation and bind your own UI to controls methods. See below for API and [this example](examples/2_externalcontrol.html).
+Add `menu: false` in options object to prevent UI creation and bind your own UI to controls methods. See below for API and [this example](http://127.0.0.1:5500/examples/2_externalcontrol.html).
 
 ## API
 
