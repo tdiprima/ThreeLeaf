@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Integration? Imitation.</title>
+  <!-- That's like trying to ask ChatGPT for a heavy metal song. -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map { height: 400px; }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://threejs.org/build/three.js"></script>
+<script>
+  let scene = new THREE.Scene();
+  let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 2;
+
+  let renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('map').appendChild(renderer.domElement);
+
+  let imgSrc = "/images/bear-soongnyoong.jpg";  // Your image path
+  let planeGeom = new THREE.PlaneGeometry(4, 2.5);
+  let tex = new THREE.TextureLoader().load(imgSrc);
+  let planeMaterial = new THREE.MeshBasicMaterial({ map: tex });
+  let plane = new THREE.Mesh(planeGeom, planeMaterial);
+  scene.add(plane);
+
+  // Array to store polygon vertices
+  let polygonVertices = [];
+
+  // Mouse click event listener
+  document.getElementById('map').addEventListener('click', function(event) {
+    // Conversion from screen coordinates to Three.js coordinates
+    let mouse = new THREE.Vector2(
+      (event.clientX / window.innerWidth) * 2 - 1,
+      - (event.clientY / window.innerHeight) * 2 + 1
+    );
+
+    // Raycasting to find the point on the plane
+    let raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    let intersects = raycaster.intersectObject(plane);
+
+    // Add points to `polygonVertices`
+    if (intersects.length > 0) {
+      console.log("Intersected!");
+      let point = intersects[0].point;
+      polygonVertices.push(point);
+
+      // If we have enough vertices, create and add the polygon
+      if (polygonVertices.length >= 3) {
+        createPolygon();
+      }
+    }
+  });
+
+  function createPolygon() {
+    // Convert 2D points to 3D points on the plane surface
+    let shape = new THREE.Shape();
+    polygonVertices.forEach((point, index) => {
+      if (index === 0) {
+        shape.moveTo(point.x, point.y);
+      } else {
+        shape.lineTo(point.x, point.y);
+      }
+    });
+    shape.lineTo(polygonVertices[0].x, polygonVertices[0].y);
+
+    // Create polygon geometry from vertices
+    let geometry = new THREE.ShapeGeometry(shape);
+    let material = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+
+    // Add polygon to the scene
+    let mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // Clear the vertices array for the next polygon
+    polygonVertices = [];
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  function convertScreenCoordsToThreeCoords(x, y) {
+    // Implement conversion logic
+    return new THREE.Vector3( /* converted coordinates */ );
+  }
+</script>
+</body>
+</html>

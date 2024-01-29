@@ -1,345 +1,214 @@
 ## Leaflet + three.js
 
-<span style="color:#0000dd;">Can you give me an example of implementing leaflet.js in a three.js application?</span>
+<span style="color:blue;font-size:larger;">Can you show me how to combine three.js with leaflet.js?</span>
 
-Certainly! Combining Leaflet.js with Three.js can be a powerful way to create interactive 3D maps with overlays and additional features. In this example, I'll show you how to set up a basic Three.js application with a Leaflet map overlay. We'll assume you have basic knowledge of both Three.js and Leaflet.js.
+Combining Three.js with Leaflet.js can create a powerful tool for 3D mapping applications. Here's a basic guide on how to integrate these two libraries:
 
-### Set up your HTML file with the necessary scripts and elements
+### Step 1: Setting Up Your Project
+First, ensure you have both Leaflet.js and Three.js included in your project. You can either download these libraries and include them in your project or use a CDN. 
+
+Include the following in your HTML file:
 
 ```html
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Three.js with Leaflet Overlay</title>
-  <style>
-    body {
-      overflow: hidden;
-      margin: 0;
-    }
-
-    #map {
-      position: absolute;
-      z-index: 0;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-    }
-
-    #webgl-container {
-      position: absolute;
-      z-index: 1;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-    }
-  </style>
+    <title>Three.js and Leaflet.js Integration</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://threejs.org/build/three.js"></script>
 </head>
 <body>
-  <div id="map"></div>
-  <div id="webgl-container"></div>
-
-  <!-- Add Three.js and Leaflet.js libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <div id="map" style="width: 100%; height: 600px;"></div>
+    <script src="your_script.js"></script>
 </body>
 </html>
 ```
 
-### Create your Three.js scene and render loop
+### Step 2: Initialize Leaflet Map
+In your JavaScript file (e.g., `your_script.js`), start by initializing a Leaflet map:
 
 ```javascript
-// Three.js setup
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
+var map = L.map('map').setView([51.505, -0.09], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+}).addTo(map);
+```
+
+### Step 3: Integrating Three.js
+Now, integrate Three.js within the Leaflet map:
+
+1. **Create a Three.js Scene**: Set up a basic Three.js scene with a camera and a renderer.
+
+```javascript
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById('webgl-container').appendChild(renderer.domElement);
+document.body.appendChild(renderer.domElement);
+```
 
-// Sample cube in the scene
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
+2. **Sync Three.js with Leaflet**: You need to synchronize the Three.js scene with the Leaflet map. This involves updating the Three.js camera and renderer whenever the map moves.
+
+```javascript
+map.on('move', updateThreeScene);
+map.on('resize', updateThreeScene);
+
+function updateThreeScene() {
+    // Code to update Three.js scene based on Leaflet map's current view
+}
+```
+
+3. **Add Objects to Three.js Scene**: Add any Three.js objects to the scene as you normally would. You need to convert Leaflet's latitude and longitude to Three.js x, y, z coordinates.
+
+```javascript
+var geometry = new THREE.BoxGeometry();
+var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+var cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
+```
 
-camera.position.z = 5;
+4. **Animate the Scene**: Create an animation loop to render the scene.
 
+```javascript
 function animate() {
-  requestAnimationFrame(animate);
-
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-
-  renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
 }
 animate();
 ```
 
-### Set up your Leaflet map and overlay
+### Step 4: Coordinate Conversion
+The challenging part is converting Leaflet's geographic coordinates to the Three.js 3D space. You need to write a function that translates latitude and longitude into x, y, z coordinates that Three.js can use.
+
+### Step 5: Handling Events
+Handle user interactions and events, such as mouse movements, clicks, or zoom changes, to create a dynamic and responsive 3D map experience.
+
+### Additional Notes
+- **Performance Considerations**: 3D rendering can be resource-intensive. Optimize your application for better performance.
+- **Advanced Features**: You can add more advanced features like 3D terrain, custom shaders, or interactive 3D objects based on map data.
+
+Remember, this is a high-level overview. You will need to adjust the code to fit the specific requirements of your application, and dealing with 3D coordinate conversion can be complex. Experimenting and adapting the code to suit your needs is key.
+
+## Give me the function
+
+<span style="color:blue;font-size:larger;">All it did was make the cube tiny.</span>
+
+Certainly! The `updateThreeScene` function is crucial for ensuring that the Three.js scene is updated in response to Leaflet map movements. This function will synchronize the camera and scene in Three.js with the current view of the Leaflet map. Here's an example of how this function can be implemented:
+
+### `updateThreeScene` Function
 
 ```javascript
-// Leaflet map setup
-const map = L.map('map').setView([51.505, -0.09], 13);
+function updateThreeScene() {
+    // Calculate the size of the map view in pixels
+    var mapSize = map.getSize();
+    renderer.setSize(mapSize.x, mapSize.y);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    // Get map bounds and calculate the scale factor and offset
+    var bounds = map.getBounds();
+    var mapWidth = bounds.getEast() - bounds.getWest();
+    var mapHeight = bounds.getNorth() - bounds.getSouth();
 
-// Overlay a Three.js scene on the Leaflet map
-const overlay = L.canvasOverlay()
-  .drawing(drawWebGL)
-  .addTo(map);
+    // Set the camera aspect to match the map's aspect ratio
+    camera.aspect = mapSize.x / mapSize.y;
+    camera.updateProjectionMatrix();
 
-function drawWebGL(canvasOverlay, params) {
-  // Get the Leaflet map overlay canvas and create a Three.js scene on it
-  const canvas = canvasOverlay.canvas();
-  const context = canvas.getContext('webgl');
-  const gl = context || canvas.getContext('experimental-webgl');
+    // Calculate the Three.js camera position based on the map center
+    var center = map.getCenter();
+    var scale = calculateScale(map.getZoom());
 
-  // Your Three.js scene setup using the same canvas for rendering
-  // You can use Three.js to render any 3D content, like points, lines, or meshes.
-  // For simplicity, we'll just render a cube on the map.
-  // Make sure to update the cube position accordingly to the map coordinates.
+    // Position the Three.js camera (you may need to adjust these values)
+    camera.position.x = (center.lng - bounds.getWest()) / mapWidth - 0.5;
+    camera.position.y = -((center.lat - bounds.getSouth()) / mapHeight - 0.5);
+    camera.position.z = scale; // The Z position controls the zoom in Three.js
 
-  // This function will be called every time the map is panned or zoomed.
+    // Set the camera to look at the center of the scene
+    camera.lookAt(scene.position);
+
+    // Render the scene
+    renderer.render(scene, camera);
 }
 
-// Call the drawWebGL function to initialize the Three.js scene on the Leaflet map
-drawWebGL(overlay);
+function calculateScale(zoom) {
+    // This function calculates a scale factor based on the Leaflet map's zoom level
+    // You might need to adjust the scale calculation to suit your specific use case
+    return 100 / Math.pow(2, zoom - 13);
+}
 ```
 
-<br>
+### Explanation
 
-Please note that the above code is a simplified example. You can create more complex scenes in Three.js and overlay them on the Leaflet map as needed. Remember to **adjust the `drawWebGL` function** to include your actual Three.js scene setup, rendering, and update logic.
+- **Updating Renderer Size**: The renderer size is updated to match the current size of the Leaflet map view.
+- **Map Bounds and Scale**: The bounds of the map are used to calculate the width and height of the current view, which is important for positioning objects in the Three.js scene.
+- **Camera Aspect Ratio**: The camera's aspect ratio is updated to match that of the map view to ensure correct perspective.
+- **Camera Position**: The camera's position is set based on the current center of the Leaflet map. The `calculateScale` function, which needs to be tailored to your specific use case, determines the zoom level in the Three.js scene.
+- **Look At Center**: The camera is set to look at the center of the scene.
+- **Render**: The scene is rendered with the updated camera settings.
 
-Also, keep in mind that integrating Leaflet.js and Three.js can have **performance implications**, especially on mobile devices. Consider **optimizing** your code and using lower-poly models or point clouds if you encounter performance issues with complex 3D scenes.
+### Customization
+This code is a starting point and may need adjustments based on your specific use case, especially in how you map Leaflet's 2D coordinates to Three.js's 3D space and handle the camera's zoom level. The key is to ensure that the Three.js camera correctly corresponds to the Leaflet map's view and zoom level.
 
-## Error
+## The cube is underneath the map
 
-<span style="color:#0000dd;">In the example implementation you provided above, the program errors on "const overlay = L.canvasOverlay();" saying "L.canvasOverlay is not a function".</span>
+<span style="color:blue;font-size:larger;">You have to scroll down to see it.</span>
 
-I apologize for the confusion. **You are right**; there is no built-in `L.canvasOverlay()` function in Leaflet.js.
+Some things you can try:
 
-The correct way to overlay Three.js content on a Leaflet map is to use a custom layer with `L.DomUtil.create()` to create a container for the Three.js scene.
+```js
+var geometry = new THREE.BoxGeometry(1, 1, 1); // Increase these values if needed
 
-Here's an updated version of the example, using a custom layer to overlay Three.js content on the Leaflet map:
+camera.position.z = 5; // Increase if necessary to 'move the camera back'
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Three.js with Leaflet Overlay</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
+renderer.setClearColor(0x000000, 0); // You can adjust the alpha for transparency
 
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      z-index: 0;
-    }
+camera.lookAt(scene.position); // Adjust as necessary
 
-    #webgl-container {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      z-index: 1;
-    }
-  </style>
-</head>
-<body>
-  <div id="map"></div>
-  <div id="webgl-container"></div>
-
-  <!-- Add Three.js and Leaflet.js libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script>
-    // Your Three.js setup and content creation code here
-    // (Same as before)
-
-    // Leaflet map setup
-    const map = L.map('map').setView([51.505, -0.09], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-    // Create a custom layer for Three.js content overlay
-    const customLayer = L.Layer.extend({
-      onAdd: function (map) {
-        this._map = map;
-
-        // Create a container div for Three.js content
-        this._container = L.DomUtil.create('div', 'leaflet-zoom-animated');
-        this._container.id = 'webgl-container';
-        this._container.style.pointerEvents = 'none'; // Allow interactions with the map under the overlay
-
-        // Append the container to the map pane
-        map.getPanes().overlayPane.appendChild(this._container);
-
-        // Call the function to set up your Three.js content here
-        drawWebGL(this._container, map.getSize());
-      },
-
-      onRemove: function (map) {
-        // Clean up and remove the container from the map pane
-        map.getPanes().overlayPane.removeChild(this._container);
-      }
-    });
-
-    // Add the custom layer to the map
-    map.addLayer(new customLayer());
-  </script>
-</body>
-</html>
+// Debugging (to better understand the positioning of objects)
+var axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
 ```
 
-<br>
+Normally, you shouldn't need to adjust the render order for a basic setup. However, if you have multiple objects and some are not appearing, you might need to look into render order or object transparency settings.
 
-The key difference is that we are now using a custom layer that extends `L.Layer`. This custom layer allows us to control how the Three.js content is added and removed from the map. We create a container div for Three.js content and append it to the `overlayPane` of the map. Additionally, we call the `drawWebGL()` function to set up your Three.js content within the custom layer.
+## Fix my CSS
 
-With this updated implementation, your Three.js content should be correctly overlaid on the Leaflet map. Make sure to customize the `drawWebGL()` function to set up your Three.js scene, render your 3D content, and handle any interactions as needed.
+<span style="color:blue;font-size:larger;">I got this to work by adding css and attaching the renderer to a div with id `webgl-container`.  The problem is, I can no longer move the map.</span>
 
-## Err0r
+The issue you're facing with the map not being movable is likely due to the `#webgl-container` overlapping the Leaflet map and capturing all the mouse events. Since `#webgl-container` has a higher `z-index`, it's essentially sitting on top of your map, preventing any interaction with the map underneath.
 
-<span style="color:#0000dd;">So then the "drawWebGL" function also has to change, right?  Because there's no "canvasOverlay.canvas".  Can you please write the complete drawWebGL() function, also including whatever three.js code needs to go there?</span>
+To fix this, you can make the `#webgl-container` div ignore pointer events, allowing the events to pass through to the map layer below. You can achieve this by adding `pointer-events: none;` to the CSS of `#webgl-container`. This way, it will render the Three.js scene but won't interfere with the interaction on the Leaflet map.
 
-Apologies for the oversight. You are correct; the `drawWebGL` function needs to be updated to work within the custom layer context. Below is the complete `drawWebGL` function, including the necessary Three.js code to render a cube on the map:
+<span style="color:blue;font-size:larger;">All he did was add pointer-events:none to webgl-container.</span>
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Three.js with Leaflet Overlay</title>
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-    }
+Update your CSS as follows:
 
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      z-index: 0;
-    }
+```css
+body {
+    overflow: hidden;
+    margin: 0;
+}
 
-    #webgl-container {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      z-index: 1;
-    }
-  </style>
-</head>
-<body>
-  <div id="map"></div>
-  <div id="webgl-container"></div>
+#map {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
 
-  <!-- Add Three.js and Leaflet.js libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script>
-    // Leaflet map setup
-    const map = L.map('map').setView([51.505, -0.09], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-    // Create a custom layer for Three.js content overlay
-    const customLayer = L.Layer.extend({
-      onAdd: function (map) {
-        this._map = map;
-
-        // Create a container div for Three.js content
-        this._container = L.DomUtil.create('div', 'leaflet-zoom-animated');
-        this._container.id = 'webgl-container';
-        this._container.style.pointerEvents = 'none'; // Allow interactions with the map under the overlay
-
-        // Append the container to the map pane
-        map.getPanes().overlayPane.appendChild(this._container);
-
-        // Call the function to set up your Three.js content here
-        this.drawWebGL(this._container, map.getSize());
-      },
-
-      onRemove: function (map) {
-        // Clean up and remove the container from the map pane
-        map.getPanes().overlayPane.removeChild(this._container);
-      },
-
-      // Updated drawWebGL function with Three.js code
-      drawWebGL: function (container, size) {
-        // Three.js setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, size.x / size.y, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
-        renderer.setSize(size.x, size.y);
-        container.appendChild(renderer.domElement);
-
-        // Sample cube in the scene
-        const geometry = new THREE.BoxGeometry();
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(geometry, material);
-        scene.add(cube);
-
-        camera.position.z = 5;
-
-        function animate() {
-          requestAnimationFrame(animate);
-
-          cube.rotation.x += 0.01;
-          cube.rotation.y += 0.01;
-
-          renderer.render(scene, camera);
-        }
-
-        animate();
-
-        // Function to update the Three.js scene when the map is panned or zoomed
-        function update() {
-          const { x, y } = map.containerPointToLatLng([0, 0]);
-          const z = map.getZoom();
-          const s = map.getSize();
-          const alt = 1 + ((s.y * 180) / (512 * 2 ** z)) / 400000;
-
-          // Position the cube based on the map's center and zoom level
-          cube.position.set(-y, x, alt);
-
-          renderer.setSize(s.x, s.y);
-          camera.aspect = s.x / s.y;
-          camera.updateProjectionMatrix();
-          renderer.render(scene, camera);
-        }
-
-        // Listen for map move events and update the Three.js scene accordingly
-        map.on('move', update);
-        update();
-      }
-    });
-
-    // Add the custom layer to the map
-    map.addLayer(new customLayer());
-  </script>
-</body>
-</html>
+#webgl-container {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    pointer-events: none; /* Add this line */
+}
 ```
 
-<br>
+By setting `pointer-events: none`, you're allowing pointer events like clicking, dragging, etc., to "pass through" the `#webgl-container` and interact with elements behind it, which in this case is your Leaflet map.
 
-This updated version of the `drawWebGL` function creates a Three.js scene, sets up a simple rotating cube, and then adds the scene to the container div within the custom layer. The cube's position is updated based on the map's center, zoom level, and size, allowing it to stay correctly positioned as the map is panned or zoomed.
-
-Remember that this is a basic example, and you can further customize the Three.js scene and content to suit your specific needs and 3D models. Additionally, consider optimizing the rendering and performance based on the complexity of your scene and the targeted devices.
-
-### Ugh.
-
-OK, I'm actually fxcked now because the code is completely different.
+After making this change, you should be able to interact with the Leaflet map as usual, while still displaying the Three.js content in the `#webgl-container` div.
 
 # FYI
 
@@ -367,7 +236,7 @@ https://gist.github.com/Sumbera/c6fed35c377a46ff74c3
 
 https://mappa.js.org/docs/examples-three-js.html
 
-**What is better than three JS?**
+## What is better than three JS?
 
 WebGL, BabylonJS, Unity, D3. js, and PlayCanvas are the most popular alternatives and competitors to three.
 
@@ -377,7 +246,7 @@ WebGL, BabylonJS, Unity, D3. js, and PlayCanvas are the most popular alternative
 
 A "lower-poly model" and a "point cloud" are both **representations of 3D data** used in computer graphics and visualization.
 
-### Lower-poly model
+## Lower-poly model
 
 A "lower-poly model" refers to a 3D model that is constructed using a relatively small number of polygons (also known as faces or triangles) compared to a high-poly model. **Polygons are the building blocks** of 3D models and are used to represent the surfaces of objects in computer graphics. Each polygon is defined by its vertices (corner points) and can represent a flat or curved surface.
 
@@ -385,7 +254,7 @@ The level of detail in a 3D model is determined by the number of polygons it con
 
 Lower-poly models are commonly used in real-time applications, such as video games, virtual reality environments, and interactive 3D web applications, where performance and responsiveness are crucial.
 
-### Point cloud
+## Point cloud
 
 A "point cloud" is a **set of data points in 3D space**, typically representing the surface of an object or a scene. Each point in the point cloud represents a specific position in 3D space and may also include additional attributes, such as color or intensity. Point clouds can be obtained from various sources, including 3D scanners, Lidar (Light Detection and Ranging) systems, photogrammetry, and other 3D sensing technologies.
 
