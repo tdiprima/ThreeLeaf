@@ -1,3 +1,5 @@
+// Defines a Leaflet Control for drawing and erasing polygons on a map with adjustable
+// radius and customizable options.
 //import L from 'leaflet';
 import turf from './myTurf.js';
 import './PaintPolygon.css';

@@ -1,3 +1,5 @@
+// Defines a PaintPolygon control for Leaflet.js, enabling drawing and erasing of polygon
+// shapes on a map with adjustable settings and triggered actions.
 //import L from 'leaflet';
 import turf from './myTurf.js';
 import './PaintPolygon.css';
