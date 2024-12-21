@@ -1,8 +1,6 @@
-## Countess Paint Polygon
+## ThreeLeaf
 
-### Enhanced Interactivity with Polygons
-
-Our objective here is the seamless integration of two powerful tools: [leaflet.js](https://leafletjs.com/), a JavaScript library for mobile-friendly interactive maps and [three.js](https://threejs.org/), a cross-browser JavaScript library/API that is primarily used to create and display animated 3D computer graphics on a Web browser.
+Our objective here is the seamless integration of: [leaflet.js](https://leafletjs.com/), a JavaScript library for mobile-friendly interactive maps and [three.js](https://threejs.org/), a cross-browser JavaScript library/API that is primarily used to create and display animated 3D computer graphics on a Web browser.
 
 Our key focus will be on the script - [PaintPolygon.js](https://github.com/tcoupin/leaflet-paintpolygon) which is central to our purpose.
 
